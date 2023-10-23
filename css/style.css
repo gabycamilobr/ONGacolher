@@ -503,7 +503,7 @@ a:focus {
   min-height: 550px;
 }
 .banner .block {
-  padding: 80px 0px 160px;
+  padding: z0px 0px 160px;
 }
 .banner .block h1 {
   font-size: 60px;
@@ -623,9 +623,9 @@ a:focus {
 
 .feature-item {
   flex-basis: 33.33%;
-  margin: 0px 10px;
+  margin: 135px 10px;
   padding: 40px 30px;
-  background-color: #fff;
+  background-color: #e4e4e4da;
   border-radius: 15px 15px 15px 15px;
   box-shadow: 0px 0px 30px 0px rgba(0, 42, 106, 0.1);
 }
