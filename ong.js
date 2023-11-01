@@ -5,7 +5,9 @@ const bodyParser = require("body-parser");
 
 //configurando o express para o postman e para usar a pagina
 const app = express();
+app.use(bodyParser.urlencoded({extended : true}));
 app.use(bodyParser.json());
+
 const port = 3000;
 
 //configurando o banco de dados
@@ -41,6 +43,18 @@ app.post("/cadastro", async (req, res) => {
     confirmarsenha: confirmarsenha,
     status: status,
   });
+
+   //validação de campos
+   if(nome == null || email == null || senha == null || confirmarsenha == null || status == null ){
+    return res.status(400).json({error : "Preenchar todos os campos!!!"});
+  }
+
+  //teste de duplicidade
+  const emailExiste = await Usuario.findOne({email : email});
+
+  if(emailExiste){
+    return res.status(400).json({error : "O email informado já existe"});
+  }
 
   try {
     const newUsuario = await usuario.save();
