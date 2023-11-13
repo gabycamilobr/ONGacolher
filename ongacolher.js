@@ -14,6 +14,7 @@ const port = 3000;
 mongoose.connect("mongodb://127.0.0.1:27017/ongacolher", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  serverSelectionTimeoutMS : 20000
 });
 
 //criando a model do seu projeto
@@ -21,7 +22,7 @@ const UsuarioSchema = new mongoose.Schema({
   nome: { type: String },
   email: { type: String, required: true },
   senha: { type: Number },
-  confirmarsenha: { type: Number },
+  confirmarsenha: { type: Number},
   status : {type: String}
 });
 
@@ -29,7 +30,7 @@ const Usuario = mongoose.model("Usuario", UsuarioSchema);
 
 //configuração dos roteamendos
 //cadastrousuario
-app.post("/cadastro", async (req, res) => {
+app.post("/cadastrousuario", async (req, res) => {
   const nome = req.body.nome;
   const email = req.body.email;
   const senha = req.body.senha;
@@ -44,27 +45,41 @@ app.post("/cadastro", async (req, res) => {
     status: status,
   });
 
-   //validação de campos
-   if(nome == null || email == null || senha == null || confirmarsenha == null || status == null ){
-    return res.status(400).json({error : "Preenchar todos os campos!!!"});
+  if(email == null || senha == null){
+      return res.status(400).json({error : "Preencher todos os campos"});
   }
 
-  //teste de duplicidade
-  const emailExiste = await Usuario.findOne({email : email});
+  //teste mais importante da ac
+  const emailExiste = await Usuario.findOne({email:email});
 
   if(emailExiste){
-    return res.status(400).json({error : "O email informado já existe"});
+      return res.status(400).json({error : "Esse email já está registrado no sistema"});
   }
 
-  try {
-    const newUsuario = await usuario.save();
-    res.json({ error: null, msg: "Cadastro ok", UsuarioId: newUsuario._id });
-  } catch (error) {}
+  try{
+      const newUsuario = await usuario.save();
+      res.json({error : null, msg : "Cadastro ok", usuarioId : newUsuario._id});
+  } catch(error){
+      res.status(400).json({error});
+  }
 });
 
-app.get("/", async(req, res)=>{
-    res.sendFile(__dirname + "/index.html")
+app.get("/cadastrousuario", async(req, res)=> {
+  res.sendFile(__dirname+"/cadastrousuario.html");
 });
+
+app.get("/index", async(req, res)=>{
+  res.sendFile(__dirname +"/index.html");
+});
+
+app.get("/login", async(req, res)=>{
+  res.sendFile(__dirname +"/login.html");
+});
+
+app.get("/contact", async(req, res)=>{
+  res.sendFile(__dirname +"/contact.html");
+});
+
 
 app.listen(port, ()=>{
     console.log(`Servidor rodando na porta ${port}`)
